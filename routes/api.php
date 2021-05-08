@@ -32,9 +32,32 @@ Route::post('/posts', function () {
         'content' => 'required',
     ]);
 
-    return Post::create([
+    $succes = Post::create([
         'title' => request('title'),
         'content' => request('content'),
     ]);
+
+    return ["succes" => $succes];
+
+});
+
+Route::put('posts/{post}', function (Post $post) {
+    request()->validate([
+        'title' => 'required|max:254',
+        'content' => 'required',
+    ]);
+
+    $succes = $post->update([
+        'title' => request('title'),
+        'content' => request('content'),
+    ]);
+
+    return ["succes" => $succes];
+});
+
+Route::delete('posts/{post}', function (Post $post) {
+    $succes = $post->delete();
+
+    return ["succes" => $succes];
 
 });

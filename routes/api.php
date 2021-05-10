@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,45 +19,52 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Route untuk menampilkan semua post
-Route::get('/posts', function () {
-    return Post::all();
-});
+Route::get('/products', [ProductController::class, 'index'])->name('product');
+Route::post('/products', [ProductController::class, 'store']);
+Route::get('/products/{product}', [ProductController::class, 'show']);
+Route::put('/products/{product}', [ProductController::class, 'update']);
+Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+Route::get('/products/search/{name}', [ProductController::class, 'search']);
 
-//Route untuk menambahkan post
-Route::post('/posts', function () {
+// //Route untuk menampilkan semua post
+// Route::get('/posts', function () {
+//     return Post::all();
+// });
 
-    request()->validate([
-        'title' => 'required|max:254',
-        'content' => 'required',
-    ]);
+// //Route untuk menambahkan post
+// Route::post('/posts', function () {
 
-    $succes = Post::create([
-        'title' => request('title'),
-        'content' => request('content'),
-    ]);
+//     request()->validate([
+//         'title' => 'required|max:254',
+//         'content' => 'required',
+//     ]);
 
-    return ["succes" => $succes];
+//     $succes = Post::create([
+//         'title' => request('title'),
+//         'content' => request('content'),
+//     ]);
 
-});
+//     return ["succes" => $succes];
 
-Route::put('posts/{post}', function (Post $post) {
-    request()->validate([
-        'title' => 'required|max:254',
-        'content' => 'required',
-    ]);
+// });
 
-    $succes = $post->update([
-        'title' => request('title'),
-        'content' => request('content'),
-    ]);
+// Route::put('posts/{post}', function (Post $post) {
+//     request()->validate([
+//         'title' => 'required|max:254',
+//         'content' => 'required',
+//     ]);
 
-    return ["succes" => $succes];
-});
+//     $succes = $post->update([
+//         'title' => request('title'),
+//         'content' => request('content'),
+//     ]);
 
-Route::delete('posts/{post}', function (Post $post) {
-    $succes = $post->delete();
+//     return ["succes" => $succes];
+// });
 
-    return ["succes" => $succes];
+// Route::delete('posts/{post}', function (Post $post) {
+//     $succes = $post->delete();
 
-});
+//     return ["succes" => $succes];
+
+// });

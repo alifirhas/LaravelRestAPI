@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,52 +22,34 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/products', [ProductController::class, 'index'])->name('product');
-Route::post('/products', [ProductController::class, 'store']);
-Route::get('/products/{product}', [ProductController::class, 'show']);
-Route::put('/products/{product}', [ProductController::class, 'update']);
-Route::delete('/products/{product}', [ProductController::class, 'destroy']);
-Route::get('/products/search/{name}', [ProductController::class, 'search']);
 
-// //Route untuk menampilkan semua post
-// Route::get('/posts', function () {
-//     return Post::all();
-// });
 
-// //Route untuk menambahkan post
-// Route::post('/posts', function () {
+//Route Product
 
-//     request()->validate([
-//         'title' => 'required|max:254',
-//         'content' => 'required',
-//     ]);
+Route::prefix('products')->group(function () {
+    //Public
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{product}', [ProductController::class, 'show']);
+    Route::get('/search/{name}', [ProductController::class, 'search']);
 
-//     $succes = Post::create([
-//         'title' => request('title'),
-//         'content' => request('content'),
-//     ]);
+    //Protected
+    Route::group(["middleware" => ['auth:sanctum']], function(){
+        Route::post('/', [ProductController::class, 'store']);
+        Route::put('/{product}', [ProductController::class, 'update']);
+        Route::delete('/{product}', [ProductController::class, 'destroy']);
+    });
 
-//     return ["succes" => $succes];
+});
 
-// });
+//Route User
+Route::prefix('/users')->group(function () {
+    //Public
+    Route::post('/register', [RegisterController::class, 'store']);
+    Route::post('/login', [LoginController::class, 'index']);
 
-// Route::put('posts/{post}', function (Post $post) {
-//     request()->validate([
-//         'title' => 'required|max:254',
-//         'content' => 'required',
-//     ]);
-
-//     $succes = $post->update([
-//         'title' => request('title'),
-//         'content' => request('content'),
-//     ]);
-
-//     return ["succes" => $succes];
-// });
-
-// Route::delete('posts/{post}', function (Post $post) {
-//     $succes = $post->delete();
-
-//     return ["succes" => $succes];
-
-// });
+    //Protected
+    Route::group(["middleware" => ['auth:sanctum']], function(){
+        Route::get('/', [RegisterController::class, 'index']);
+        Route::Post('/logout', [LogoutController::class, 'index']);
+    });
+});

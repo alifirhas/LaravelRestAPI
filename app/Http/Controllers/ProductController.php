@@ -14,7 +14,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::all();
+        $data = [
+            "status" => "200",
+            "products" => Product::all(),
+        ];
+
+        return response()->json($data);
     }
 
     /**
@@ -29,9 +34,9 @@ class ProductController extends Controller
         $this->validate($request, [
             'name' => 'required|max:255',
             'slug' => 'required|max:255|',
-            'price' => 'required|max:8|',   
+            'price' => 'required|max:8|',
         ]);
-        
+
         return Product::create([
             'name' => request('name'),
             'slug' => request('slug'),
@@ -64,9 +69,9 @@ class ProductController extends Controller
         $this->validate($request, [
             'name' => 'required|max:255',
             'slug' => 'required|max:255|',
-            'price' => 'required|max:8|',   
+            'price' => 'required|max:8|',
         ]);
-        
+
         return $product->update([
             'name' => request('name'),
             'slug' => request('slug'),
@@ -94,6 +99,6 @@ class ProductController extends Controller
      */
     public function search($name)
     {
-        return Product::where('name', 'like', '%'.$name.'%')->get();
+        return Product::where('name', 'like', '%' . $name . '%')->get();
     }
 }
